@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brief Cliente — SBP</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #FEFEFE; color: #101010; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 2rem 1rem; }
+.form-wrap { width: 100%; max-width: 620px; }
+.header { margin-bottom: 2rem; }
+.logo { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; color: #C2D10F; text-transform: uppercase; margin-bottom: 1rem; }
+.header h1 { font-size: 26px; font-weight: 600; color: #101010; }
+.header p { font-size: 14px; color: #666; margin-top: 6px; }
+.step-bar { display: flex; gap: 6px; margin-bottom: 2rem; }
+.step-dot { flex: 1; height: 3px; background: #e5e5e5; border-radius: 4px; transition: background 0.3s; }
+.step-dot.active { background: #C2D10F; }
+.section { display: none; }
+.section.visible { display: block; }
+.section-title { font-size: 11px; font-weight: 600; color: #C2D10F; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 1.25rem; }
+.field { margin-bottom: 1.25rem; }
+.field label { display: block; font-size: 14px; color: #444; margin-bottom: 6px; font-weight: 500; }
+.field input, .field textarea, .field select { width: 100%; padding: 10px 12px; font-size: 14px; background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; color: #101010; font-family: inherit; transition: border-color 0.15s; }
+.field input:focus, .field textarea:focus, .field select:focus { outline: none; border-color: #C2D10F; box-shadow: 0 0 0 3px rgba(194,209,15,0.12); }
+.field textarea { min-height: 80px; resize: vertical; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.nav { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; }
+.btn { padding: 10px 20px; font-size: 14px; font-weight: 500; border-radius: 8px; cursor: pointer; border: 1px solid #ddd; background: #fff; color: #101010; transition: background 0.15s, transform 0.1s; font-family: inherit; }
+.btn:hover { background: #f5f5f5; }
+.btn:active { transform: scale(0.98); }
+.btn-primary { background: #C2D10F; border-color: #C2D10F; color: #101010; }
+.btn-primary:hover { background: #aebb0d; }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.step-label { font-size: 13px; color: #999; }
+.success-box { display: none; text-align: center; padding: 4rem 1rem; }
+.success-icon { width: 56px; height: 56px; background: #C2D10F; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 24px; }
+.success-box h2 { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
+.success-box p { font-size: 14px; color: #666; line-height: 1.6; }
+.error-msg { font-size: 13px; color: #e24b4a; margin-top: 8px; display: none; }
+@media (max-width: 480px) { .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="form-wrap">
+  <div class="header">
+    <div class="logo">SBP — Solution Business Partner</div>
+    <h1>Brief cliente</h1>
+    <p>Raccogli tutte le informazioni per avviare il progetto</p>
+  </div>
+  <div class="step-bar" id="stepBar"></div>
+  <div id="formContent">
+    <div class="section visible" data-step="0">
+      <div class="section-title">Identità del business</div>
+      <div class="row">
+        <div class="field"><label>Nome attività *</label><input type="text" id="nomeAttivita" placeholder="es. Studio Rossi"></div>
+        <div class="field"><label>Settore *</label><input type="text" id="settore" placeholder="es. Odontoiatria"></div>
+      </div>
+      <div class="field"><label>Città</label><input type="text" id="citta" placeholder="es. Milano"></div>
+      <div class="field"><label>Descrizione attività *</label><textarea id="descrizione" placeholder="Descrivi l'attività in 3-5 righe..."></textarea></div>
+      <div class="field"><label>Differenziatori</label><textarea id="differenziatori" placeholder="Cosa li distingue dai competitor?"></textarea></div>
+    </div>
+    <div class="section" data-step="1">
+      <div class="section-title">Clienti e mercato</div>
+      <div class="field"><label>Target ideale</label><textarea id="target" placeholder="Chi è il cliente tipo? Età, professione, esigenze..."></textarea></div>
+      <div class="field"><label>Problema risolto</label><textarea id="problemaRisolto" placeholder="Quale problema principale risolve il tuo business?"></textarea></div>
+      <div class="field"><label>Freni all'acquisto</label><textarea id="freniAcquisto" placeholder="Cosa impedisce ai potenziali clienti di sceglierti?"></textarea></div>
+    </div>
+    <div class="section" data-step="2">
+      <div class="section-title">Sito web</div>
+      <div class="field"><label>Obiettivo sito</label><input type="text" id="obiettivoSito" placeholder="es. Generare lead, vetrina, vendite online..."></div>
+      <div class="field"><label>Pagine necessarie</label><textarea id="pagine" placeholder="es. Home, Chi siamo, Servizi, Contatti, Blog..."></textarea></div>
+      <div class="field"><label>Riferimenti estetici</label><textarea id="riferimentiEstetici" placeholder="Link a siti che piacciono come stile (minimo 2-3)"></textarea></div>
+    </div>
+    <div class="section" data-step="3">
+      <div class="section-title">Brand e contenuti</div>
+      <div class="row">
+        <div class="field"><label>Logo</label><input type="text" id="logo" placeholder="Link Google Drive / WeTransfer"></div>
+        <div class="field"><label>Colori brand</label><input type="text" id="coloriBrand" placeholder="es. Blu #0047AB, Bianco"></div>
+      </div>
+      <div class="field"><label>Testi</label>
+        <select id="testi"><option value="">-- Seleziona --</option><option value="Già pronti">Già pronti</option><option value="Da scrivere voi">Da scrivere voi</option><option value="Da revisionare">Da revisionare</option></select>
+      </div>
+      <div class="field"><label>Foto / video</label>
+        <select id="foto"><option value="">-- Seleziona --</option><option value="Disponibili - link drive">Disponibili — link drive</option><option value="Da fare shooting">Da fare shooting</option><option value="Si usano stock">Immagini stock</option></select>
+      </div>
+      <div class="field"><label>Recensioni / testimonianze</label>
+        <select id="recensioni"><option value="">-- Seleziona --</option><option value="Sì, disponibili">Sì, disponibili</option><option value="No">No</option><option value="Da raccogliere">Da raccogliere</option></select>
+      </div>
+    </div>
+    <div class="section" data-step="4">
+      <div class="section-title">Tecnico e tempistiche</div>
+      <div class="row">
+        <div class="field"><label>Dominio esistente?</label>
+          <select id="dominioEsistente"><option value="">-- Seleziona --</option><option value="Sì">Sì</option><option value="No">No</option></select>
+        </div>
+        <div class="field"><label>Nome dominio</label><input type="text" id="nomeDominio" placeholder="es. studiomario.it"></div>
+      </div>
+      <div class="field"><label>Integrazioni necessarie</label><textarea id="integrazioni" placeholder="es. Booking, eCommerce, CRM, WhatsApp..."></textarea></div>
+      <div class="row">
+        <div class="field"><label>Deadline</label><input type="date" id="deadline"></div>
+        <div class="field"><label>Scadenze particolari</label><input type="text" id="scadenze" placeholder="es. Fiera il 15 maggio"></div>
+      </div>
+      <div class="field"><label>Note aggiuntive</label><textarea id="note" placeholder="Tutto quello che non è stato detto..."></textarea></div>
+    </div>
+  </div>
+  <div class="success-box" id="successBox">
+    <div class="success-icon">✓</div>
+    <h2>Brief inviato!</h2>
+    <p>Le informazioni sono state salvate su Notion.<br>Puoi chiudere questa pagina o inserire un nuovo brief.</p>
+    <button class="btn btn-primary" style="margin-top:1.5rem" onclick="resetForm()">Nuovo brief</button>
+  </div>
+  <div class="nav" id="navBar">
+    <button class="btn" id="btnBack" onclick="changeStep(-1)">← Indietro</button>
+    <span class="step-label" id="stepLabel"></span>
+    <button class="btn btn-primary" id="btnNext" onclick="changeStep(1)">Avanti →</button>
+  </div>
+  <div class="error-msg" id="errorMsg">Compila i campi obbligatori prima di continuare.</div>
+</div>
+<script>
+const WORKER_URL='https://briefclienti.davidebusiness102006.workers.dev';
+const TOTAL_STEPS=5;
+let currentStep=0;
+const stepBar=document.getElementById('stepBar');
+for(let i=0;i<TOTAL_STEPS;i++){const dot=document.createElement('div');dot.className='step-dot';dot.id='dot'+i;stepBar.appendChild(dot);}
+function updateUI(){document.querySelectorAll('.section').forEach((s,i)=>s.classList.toggle('visible',i===currentStep));document.querySelectorAll('.step-dot').forEach((d,i)=>d.classList.toggle('active',i<=currentStep));document.getElementById('stepLabel').textContent=(currentStep+1)+' / '+TOTAL_STEPS;document.getElementById('btnBack').disabled=currentStep===0;document.getElementById('btnNext').textContent=currentStep===TOTAL_STEPS-1?'Invia brief ✓':'Avanti →';document.getElementById('errorMsg').style.display='none';}
+function validate(){if(currentStep===0){return document.getElementById('nomeAttivita').value.trim()&&document.getElementById('settore').value.trim()&&document.getElementById('descrizione').value.trim();}return true;}
+async function changeStep(dir){if(dir===1&&!validate()){document.getElementById('errorMsg').style.display='block';return;}if(dir===1&&currentStep===TOTAL_STEPS-1){await submitForm();return;}currentStep=Math.max(0,Math.min(TOTAL_STEPS-1,currentStep+dir));updateUI();}
+async function submitForm(){const btn=document.getElementById('btnNext');btn.textContent='Invio in corso...';btn.disabled=true;const now=new Date().toLocaleDateString('it-IT');const payload={nomeAttivita:document.getElementById('nomeAttivita').value.trim(),settore:document.getElementById('settore').value.trim(),citta:document.getElementById('citta').value.trim(),descrizione:document.getElementById('descrizione').value.trim(),differenziatori:document.getElementById('differenziatori').value.trim(),target:document.getElementById('target').value.trim(),problemaRisolto:document.getElementById('problemaRisolto').value.trim(),freniAcquisto:document.getElementById('freniAcquisto').value.trim(),obiettivoSito:document.getElementById('obiettivoSito').value.trim(),pagine:document.getElementById('pagine').value.trim(),riferimentiEstetici:document.getElementById('riferimentiEstetici').value.trim(),logo:document.getElementById('logo').value.trim(),coloriBrand:document.getElementById('coloriBrand').value.trim(),testi:document.getElementById('testi').value,foto:document.getElementById('foto').value,recensioni:document.getElementById('recensioni').value,dominioEsistente:document.getElementById('dominioEsistente').value,nomeDominio:document.getElementById('nomeDominio').value.trim(),integrazioni:document.getElementById('integrazioni').value.trim(),deadline:document.getElementById('deadline').value,scadenze:document.getElementById('scadenze').value.trim(),note:document.getElementById('note').value.trim(),dataInvio:now};
+try{const res=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(res.ok){document.getElementById('formContent').style.display='none';document.getElementById('navBar').style.display='none';document.getElementById('stepBar').style.display='none';document.querySelector('.header').style.display='none';document.getElementById('successBox').style.display='block';}else{throw new Error();}}catch{btn.textContent='Invia brief ✓';btn.disabled=false;document.getElementById('errorMsg').textContent='Errore durante l\'invio. Riprova.';document.getElementById('errorMsg').style.display='block';}}
+function resetForm(){currentStep=0;document.querySelectorAll('input, textarea').forEach(el=>el.value='');document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);['formContent','navBar','stepBar'].forEach(id=>document.getElementById(id).style.display='');document.querySelector('.header').style.display='block';document.getElementById('successBox').style.display='none';updateUI();}
+updateUI();
+</script>
+</body>
+</html>
